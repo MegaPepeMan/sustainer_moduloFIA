@@ -9,6 +9,7 @@ def letturaDataset(path):
     return df
 def dataCleaning(dataset):
 
+    # ----------1° parte----------
     # Tramite questa print abbiamo una overview sul complessivo di attirbuti mancanti del dataset
     null_percentage=dataset.isnull().mean()
     print(dataset.isnull().mean())
@@ -55,20 +56,27 @@ def dataCleaning(dataset):
 
     for attData in date_columns:
         nuovoDataframe[attData] = pd.to_datetime(nuovoDataframe[attData])
-        #nuovoDataframe[attData] = nuovoDataframe[attData].dt.date
-        #nuovoDataframe[attData] = (nuovoDataframe[attData].dt.floor('D'))
 
     # Stampare le colonne contenenti date
     print("Colonne contenenti date:", date_columns)
 
+    # ----------4° parte----------
     # Mostra i valori unici per ogni colonna
+
+    # Stabiliamo una soglia per il numero di categorie degli attributi categorici
+    soglia = 10
+    attributiCategorici = []
+
+    # Individuiamo quali sono gli attributi categorici
     for col in nuovoDataframe.columns:
-        unique_values = nuovoDataframe[col].unique()
-        print(f"Valori unici per la colonna '{col}': {unique_values}")
+        num_unique_values = nuovoDataframe[col].nunique()
+        if num_unique_values <= soglia:
+            attributiCategorici.append(col)
 
+    print('I seguenti attributi sono stati evidenziati come categorici: ',attributiCategorici)
 
-#dataset=letturaDataset('Carburanti.csv',columns)
-#df_pulito = data_cleaning(dataset, columns)
+    # Usiamo One Hot Encoding per dividere gli attributi categorici
+    for col in attributiCategorici:
+        nuovoDataframe = pd.get_dummies(nuovoDataframe, columns=[col])
 
-
-#print(df_pulito)
+    print(nuovoDataframe)
