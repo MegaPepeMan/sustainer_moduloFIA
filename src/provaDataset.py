@@ -1,20 +1,8 @@
-import pandas as pd
+from src.preProcessing import letturaDataset
+from src.preProcessing import *
 
-# importa il file csv
-dataset = pd.read_csv("Titanic-Dataset.csv")
+pathdataset = "Carburanti.csv"
+dfLetto = letturaDataset(pathdataset)
+dataCleaning(dfLetto)
 
-print("Sopravvissuti: ", len(dataset[(dataset['Survived'] == 1)]))
-print("Non sopravvissuti: ", len(dataset[(dataset['Survived'] == 0)]))
-print("Sopravvissuti + non sopravvissuti: ", len(dataset))
-
-valoriNulli = dataset.isna()
-
-print()
-print("CONTO DEI VALORI NULLI")
-print(valoriNulli.sum())
-print()
-
-print(dataset.info())
-print(dataset.describe())
-
-dataset.drop('Cabin', axis=1, inplace=True)
+Co-authored-by: MegaPepeMan <MegaPepeMan@users.noreply.github.com>
