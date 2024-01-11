@@ -4,6 +4,7 @@ import matplotlib.pyplot as plt
 from sklearn.model_selection import train_test_split
 from sklearn.preprocessing import MinMaxScaler, LabelEncoder
 from imblearn.over_sampling import SMOTENC
+from provadecisiontree import train_decision_tree
 
 
 def converti_in_numero(valore):
@@ -251,7 +252,7 @@ def dataCleaning(dataset,target):
 
     # aif360
 
-
+    train_decision_tree(X_resampled,X_test,y_resampled,y_test,None,['Sex'])
 
     # Se vuoi stampare il dataset:
     # dfNormalizzato.to_csv('nome_file.csv', index=False)
