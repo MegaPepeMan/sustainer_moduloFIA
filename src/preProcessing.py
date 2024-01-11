@@ -139,7 +139,7 @@ def dataCleaning(dataset,target):
     # Individuiamo quali sono gli attributi categorici
     for col in df.columns:
         num_unique_values = df[col].nunique()
-        if num_unique_values <= sogliaMax and num_unique_values>= sogliaMin:
+        if num_unique_values <= sogliaMax and num_unique_values>= sogliaMin and col != target:
             attributiCategorici.append(col)
         elif num_unique_values == 2:
             if col != target:
@@ -185,6 +185,7 @@ def dataCleaning(dataset,target):
     colonneNumeriche = df.select_dtypes(include=['float64', 'int64']).columns.tolist()
     colonneNonNumeriche = df.select_dtypes(exclude=['float64', 'int64']).columns.tolist()
 
+
     print(colonneNumeriche)
     print(colonneNonNumeriche)
     # Inizializzazione del MinMaxScaler
@@ -197,7 +198,7 @@ def dataCleaning(dataset,target):
     dfNormalizzato = pd.DataFrame(datiNormalizzati, columns=colonneNumeriche )
 
     print(dfNormalizzato)
-    # Aggiunta delle colonne non numeriche al DataFrame normalizzato
+    # Aggiunta delle colonne non numeriche al DataFrame normalizzato e della colonna target
     for col in colonneNonNumeriche:
         dfNormalizzato[col] = df[col]
 
@@ -209,9 +210,17 @@ def dataCleaning(dataset,target):
     # Feature selection (Selezioniamo le feature che hanno più potere predittivo dato che
     # avere un dataset con troppi attributi produrrà un modello overfittato) - opzionale
 
+
+
+
     # Data balancing (Sia undersampling che oversampling (possiamo usare smote))
 
+    # uso smote solo su attributi numerici
     print(dfNormalizzato.dtypes)
+    label_encoder = LabelEncoder()
+    dfNormalizzato[target] = label_encoder.fit_transform(dfNormalizzato[target])
+
+
     X = dfNormalizzato.select_dtypes(include=['float64', 'int64'])
     X = X.drop(target, axis=1)
     y = dfNormalizzato[target]

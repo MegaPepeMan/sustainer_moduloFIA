@@ -3,8 +3,12 @@ from src.preProcessing import *
 
 pathdataset = "Carburanti.csv"
 dfLetto = letturaDataset(pathdataset)
-dataCleaning(dfLetto,"VARIAZIONE")
+dataCleaning(dfLetto,"NOME_PRODOTTO")
 
-#pathdataset = "Titanic-Dataset.csv"
-#dfLetto = letturaDataset(pathdataset)
-#dataCleaning(dfLetto,"Survived")
+pathdataset = "Titanic-Dataset.csv"
+dfLetto = letturaDataset(pathdataset)
+dataCleaning(dfLetto,"Survived")
+
+pathdataset = "myntra_products_catalog.csv"
+dfLetto = letturaDataset(pathdataset)
+dataCleaning(dfLetto,"Gender")
