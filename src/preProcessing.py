@@ -1,6 +1,10 @@
 import pandas as pd
 import numpy as np
-from sklearn.preprocessing import MinMaxScaler
+import matplotlib.pyplot as plt
+from sklearn.model_selection import train_test_split
+from sklearn.preprocessing import MinMaxScaler, LabelEncoder
+from imblearn.over_sampling import SMOTENC
+
 
 def converti_in_numero(valore):
     try:
@@ -19,7 +23,7 @@ def letturaDataset(path):
     return df
 
 
-def dataCleaning(dataset):
+def dataCleaning(dataset,target):
 
     print(dataset)
 
@@ -131,22 +135,48 @@ def dataCleaning(dataset):
     sogliaMin = 3 # 3 perchè non ci interessa fare il one hot encoding di valori booleani
     sogliaMax = 10 # oltre i 10 valori diventa incategorizzabile gestire l'attributo come categorico
     attributiCategorici = []
-
+    attributiCategoriciBinari = []
     # Individuiamo quali sono gli attributi categorici
     for col in df.columns:
         num_unique_values = df[col].nunique()
         if num_unique_values <= sogliaMax and num_unique_values>= sogliaMin:
             attributiCategorici.append(col)
         elif num_unique_values == 2:
-            df[col] = df[col].apply(lambda x: x != 0)
+            if col != target:
+                label_encoder = LabelEncoder()
+                df[col] = label_encoder.fit_transform(df[col])
+                attributiCategoriciBinari.append(col)
+            else:
+                print("Attributo categorico target: ",col)
 
     print('I seguenti attributi sono stati evidenziati come categorici: ', attributiCategorici)
+
+    attributiVecchi = df.columns.tolist()
 
     # Usiamo One Hot Encoding per dividere gli attributi categorici
     for col in attributiCategorici:
         df = pd.get_dummies(df, columns=[col])
 
-    print(df)
+
+    attributiNuovi = df.columns.tolist()
+
+    attributiVecchi = set(attributiVecchi)
+    attributiNuovi= set(attributiNuovi)
+
+    attributiCategorici = attributiNuovi - attributiVecchi
+
+    attributiCategorici = list(attributiCategorici)
+
+    try:
+        attributiCategorici.append(*attributiCategoriciBinari)
+    except TypeError:
+        pass
+
+    print('Gli unici attributi categorici sono: ',attributiCategorici)
+
+    #Qui convertiamo i valori booleani True/False in valori 0 e 1 degli attributi categorici
+    for col in attributiCategorici:
+        df[col] = df[col].astype(int)
 
     # ----------7° parte----------
     # Feature scaling (min-max normalization)
@@ -181,7 +211,38 @@ def dataCleaning(dataset):
 
     # Data balancing (Sia undersampling che oversampling (possiamo usare smote))
 
+    print(dfNormalizzato.dtypes)
+    X = dfNormalizzato.select_dtypes(include=['float64', 'int64'])
+    X = X.drop(target, axis=1)
+    y = dfNormalizzato[target]
+
+    X_train, X_test, y_train, y_test = train_test_split(X, y, test_size=0.2, random_state=42)
+
+
+    smote_nc = SMOTENC(categorical_features=attributiCategorici, random_state=42)
+    print(smote_nc)
+
+    X_resampled, y_resampled = smote_nc.fit_resample(X_train, y_train)
+
+    #print(X_resampled, y_resampled)
+
+    # Creare il primo grafico per y
+    plt.figure(figsize=(10, 5))
+    plt.subplot(1, 2, 1)  # 1 riga, 2 colonne, primo grafico
+    y.value_counts().plot.pie(autopct='%.2f%%', colors=['#2467D1', '#E2E2E2'])
+
+    plt.title('Distribuzione di y')
+
+    # Creare il secondo grafico per y_resampled
+    plt.subplot(1, 2, 2)  # 1 riga, 2 colonne, secondo grafico
+    y_resampled.value_counts().plot.pie(autopct='%.2f%%', colors=['#2467D1', '#E2E2E2'])
+    plt.title('Distribuzione di y_resampled')
+
+    plt.show()
+
     # aif360
+
+
 
     # Se vuoi stampare il dataset:
     # dfNormalizzato.to_csv('nome_file.csv', index=False)
