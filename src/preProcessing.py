@@ -83,7 +83,7 @@ def dataCleaning(dataset,target):
     # converti gli attributi che contengono solo numeri in attributi di tipo float64 o int64
 
     # Salviamo tutte le colonne non numeriche
-    colonneNonNumeriche = df.select_dtypes(exclude=['float64', 'int64']).columns.tolist()
+    colonneNonNumeriche = df.select_dtypes(exclude=['float64', 'int64', 'int32', 'float32']).columns.tolist()
 
     for col in colonneNonNumeriche:
         # Salviamo la colonna in una variabile temporanea in modo da farne il rollback nel caso questa non sia solo numerica
@@ -183,8 +183,8 @@ def dataCleaning(dataset,target):
     # Feature scaling (min-max normalization)
 
     # distinguiamo le colonne da numeriche da quelle non numeriche
-    colonneNumeriche = df.select_dtypes(include=['float64', 'int64']).columns.tolist()
-    colonneNonNumeriche = df.select_dtypes(exclude=['float64', 'int64']).columns.tolist()
+    colonneNumeriche = df.select_dtypes(include=['float64', 'int64', 'int32', 'float32']).columns.tolist()
+    colonneNonNumeriche = df.select_dtypes(exclude=['float64', 'int64', 'int32', 'float32']).columns.tolist()
 
 
     print(colonneNumeriche)
