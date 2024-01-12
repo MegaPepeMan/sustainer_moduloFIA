@@ -1,4 +1,3 @@
-from src.preProcessing import letturaDataset
 from src.preProcessing import *
 
 # pathdataset = "Carburanti.csv"
