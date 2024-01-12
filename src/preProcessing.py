@@ -252,7 +252,7 @@ def dataCleaning(dataset,target):
 
     # aif360
 
-    train_decision_tree(X_resampled,X_test,y_resampled,y_test,None,['Sex'])
+    train_decision_tree(X_resampled,X_test,y_resampled,y_test,None,['Survived'])
 
     # Se vuoi stampare il dataset:
     # dfNormalizzato.to_csv('nome_file.csv', index=False)
