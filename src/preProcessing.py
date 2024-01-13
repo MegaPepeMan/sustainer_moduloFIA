@@ -4,7 +4,7 @@ import matplotlib.pyplot as plt
 from sklearn.model_selection import train_test_split
 from sklearn.preprocessing import MinMaxScaler, LabelEncoder
 from imblearn.over_sampling import SMOTENC
-from provadecisiontree import train_decision_tree
+from addestramentoDecisionTree import train_decision_tree
 
 
 def converti_in_numero(valore):
@@ -17,6 +17,7 @@ def converti_in_numero(valore):
     except ValueError:
         raise ValueError  # Mantieni il valore originale se non può essere convertito
 
+
 # pd.set_option('display.max_columns', None) # Mostra tutte le colonne
 
 def letturaDataset(path):
@@ -24,8 +25,7 @@ def letturaDataset(path):
     return df
 
 
-def dataCleaning(dataset,target):
-
+def dataCleaning(dataset, target, prot_attr):
     print(dataset)
 
     # ----------1° parte----------
@@ -55,7 +55,7 @@ def dataCleaning(dataset,target):
     # Conta i valori nulli in ciascuna riga
     print('La soglia dei valori nulli è: ', soglia_valori_nulli)
     conteggio_valori_nulli = df.isnull().sum(axis=1)
-    print('Conteggio dei valori nulli: ',conteggio_valori_nulli)
+    print('Conteggio dei valori nulli: ', conteggio_valori_nulli)
     indiciDaRimuovere = conteggio_valori_nulli[conteggio_valori_nulli >= soglia_valori_nulli].index
     print('Gli indici da rimuovere sono: ', indiciDaRimuovere)
 
@@ -63,7 +63,6 @@ def dataCleaning(dataset,target):
 
     # Resettiamo gli indici del dataframe dopo la cancellazione
     df = df.reset_index(drop=True)
-
 
     # ----------3° parte----------
     # Andiamo a gestire i valori che sono nulli e che vogliamo conservare
@@ -105,7 +104,6 @@ def dataCleaning(dataset,target):
 
     print(df.dtypes)
 
-
     #
     # # ----------X° parte----------
     # # Gestione della normalizzazione dei dati:
@@ -128,19 +126,18 @@ def dataCleaning(dataset,target):
     # # Stampare le colonne contenenti date
     # print("Colonne contenenti date:", date_columns)
 
-
     # ----------6° parte----------
     # Mostra i valori unici per ogni colonna
 
     # Stabiliamo una soglia per il numero di categorie degli attributi categorici
-    sogliaMin = 3 # 3 perchè non ci interessa fare il one hot encoding di valori booleani
-    sogliaMax = 10 # oltre i 10 valori diventa incategorizzabile gestire l'attributo come categorico
+    sogliaMin = 3  # 3 perchè non ci interessa fare il one hot encoding di valori booleani
+    sogliaMax = 10  # oltre i 10 valori diventa incategorizzabile gestire l'attributo come categorico
     attributiCategorici = []
     attributiCategoriciBinari = []
     # Individuiamo quali sono gli attributi categorici
     for col in df.columns:
         num_unique_values = df[col].nunique()
-        if num_unique_values <= sogliaMax and num_unique_values>= sogliaMin and col != target:
+        if num_unique_values <= sogliaMax and num_unique_values >= sogliaMin and col != target:
             attributiCategorici.append(col)
         elif num_unique_values == 2:
             if col != target:
@@ -148,7 +145,7 @@ def dataCleaning(dataset,target):
                 df[col] = label_encoder.fit_transform(df[col])
                 attributiCategoriciBinari.append(col)
             else:
-                print("Attributo categorico target: ",col)
+                print("Attributo categorico target: ", col)
 
     print('I seguenti attributi sono stati evidenziati come categorici: ', attributiCategorici)
 
@@ -158,11 +155,10 @@ def dataCleaning(dataset,target):
     for col in attributiCategorici:
         df = pd.get_dummies(df, columns=[col])
 
-
     attributiNuovi = df.columns.tolist()
 
     attributiVecchi = set(attributiVecchi)
-    attributiNuovi= set(attributiNuovi)
+    attributiNuovi = set(attributiNuovi)
 
     attributiCategorici = attributiNuovi - attributiVecchi
 
@@ -173,9 +169,9 @@ def dataCleaning(dataset,target):
     except TypeError:
         pass
 
-    print('Gli unici attributi categorici sono: ',attributiCategorici)
+    print('Gli unici attributi categorici sono: ', attributiCategorici)
 
-    #Qui convertiamo i valori booleani True/False in valori 0 e 1 degli attributi categorici
+    # Qui convertiamo i valori booleani True/False in valori 0 e 1 degli attributi categorici
     for col in attributiCategorici:
         df[col] = df[col].astype(int)
 
@@ -186,7 +182,6 @@ def dataCleaning(dataset,target):
     colonneNumeriche = df.select_dtypes(include=['float64', 'int64', 'int32', 'float32']).columns.tolist()
     colonneNonNumeriche = df.select_dtypes(exclude=['float64', 'int64', 'int32', 'float32']).columns.tolist()
 
-
     print(colonneNumeriche)
     print(colonneNonNumeriche)
     # Inizializzazione del MinMaxScaler
@@ -196,7 +191,7 @@ def dataCleaning(dataset,target):
     datiNormalizzati = scaler.fit_transform(df[colonneNumeriche])
 
     # Creazione di un nuovo DataFrame con i dati normalizzati
-    dfNormalizzato = pd.DataFrame(datiNormalizzati, columns=colonneNumeriche )
+    dfNormalizzato = pd.DataFrame(datiNormalizzati, columns=colonneNumeriche)
 
     print(dfNormalizzato)
     # Aggiunta delle colonne non numeriche al DataFrame normalizzato e della colonna target
@@ -206,13 +201,8 @@ def dataCleaning(dataset,target):
     print("Dati normalizzati:")
     print(dfNormalizzato)
 
-
-
     # Feature selection (Selezioniamo le feature che hanno più potere predittivo dato che
     # avere un dataset con troppi attributi produrrà un modello overfittato) - opzionale
-
-
-
 
     # Data balancing (Sia undersampling che oversampling (possiamo usare smote))
 
@@ -221,20 +211,18 @@ def dataCleaning(dataset,target):
     label_encoder = LabelEncoder()
     dfNormalizzato[target] = label_encoder.fit_transform(dfNormalizzato[target])
 
-
     X = dfNormalizzato.select_dtypes(include=['float64', 'int64'])
     X = X.drop(target, axis=1)
     y = dfNormalizzato[target]
 
     X_train, X_test, y_train, y_test = train_test_split(X, y, test_size=0.2, random_state=42)
 
-
     smote_nc = SMOTENC(categorical_features=attributiCategorici, random_state=42)
     print(smote_nc)
 
     X_resampled, y_resampled = smote_nc.fit_resample(X_train, y_train)
 
-    #print(X_resampled, y_resampled)
+    # print(X_resampled, y_resampled)
 
     # Creare il primo grafico per y
     plt.figure(figsize=(10, 5))
@@ -252,7 +240,7 @@ def dataCleaning(dataset,target):
 
     # aif360
 
-    train_decision_tree(X_resampled,X_test,y_resampled,y_test,None,'Sex')
+    train_decision_tree(X_resampled, X_test, y_resampled, y_test, None, prot_attr)
 
     # Se vuoi stampare il dataset:
     # dfNormalizzato.to_csv('nome_file.csv', index=False)
