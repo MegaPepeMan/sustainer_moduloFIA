@@ -5,7 +5,7 @@ from sklearn.model_selection import train_test_split
 from sklearn.preprocessing import MinMaxScaler, LabelEncoder
 from imblearn.over_sampling import SMOTENC
 from addestramentoDecisionTree import train_decision_tree
-
+from provaNaiveBayes import trainNaiveBayes
 
 def converti_in_numero(valore):
     try:
@@ -149,20 +149,10 @@ def dataCleaning(dataset, target, prot_attr):
 
     print('I seguenti attributi sono stati evidenziati come categorici: ', attributiCategorici)
 
-    attributiVecchi = df.columns.tolist()
-
-    # Usiamo One Hot Encoding per dividere gli attributi categorici
+    # Usiamo LabelEncoder() per dividere gli attributi categorici
     for col in attributiCategorici:
-        df = pd.get_dummies(df, columns=[col])
-
-    attributiNuovi = df.columns.tolist()
-
-    attributiVecchi = set(attributiVecchi)
-    attributiNuovi = set(attributiNuovi)
-
-    attributiCategorici = attributiNuovi - attributiVecchi
-
-    attributiCategorici = list(attributiCategorici)
+        label_encoder = LabelEncoder()
+        df[col] = label_encoder.fit_transform(df[col])
 
     try:
         attributiCategorici.append(*attributiCategoriciBinari)
@@ -240,7 +230,8 @@ def dataCleaning(dataset, target, prot_attr):
 
     # aif360
 
-    train_decision_tree(X_resampled, X_test, y_resampled, y_test, None, prot_attr)
+    ##train_decision_tree(X_resampled, X_test, y_resampled, y_test, None, prot_attr)
+    trainNaiveBayes(X_resampled, X_test, y_resampled, y_test, None, prot_attr)
 
     # Se vuoi stampare il dataset:
     # dfNormalizzato.to_csv('nome_file.csv', index=False)
