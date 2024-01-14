@@ -2,5 +2,6 @@
   "tipoModello": "DecisionTree",
   "decisionTreeProfondita": 5,
   "decisionTreeCampioniFoglia": 10,
-  "decisionTreeCriterioDiSuddivisione": "gini"
+  "decisionTreeCriterioDiSuddivisione": "gini",
+  "target" : "Survived"
 }

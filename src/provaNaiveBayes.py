@@ -118,5 +118,4 @@ def trainNaiveBayes(X_train, X_test, y_train, y_test, json_config_path, prot_att
     # plt.title('Receiver Operating Characteristic')
     # plt.legend(loc="lower right")
     # plt.show()
-
-    return naive_bayes_model
+    return rew, accuracy, recall, precision, emissions

@@ -1,3 +1,5 @@
+import json
+
 import pandas as pd
 import numpy as np
 import matplotlib.pyplot as plt
@@ -6,6 +8,7 @@ from sklearn.preprocessing import MinMaxScaler, LabelEncoder
 from imblearn.over_sampling import SMOTENC
 from addestramentoDecisionTree import train_decision_tree
 from provaNaiveBayes import trainNaiveBayes
+
 
 def converti_in_numero(valore):
     try:
@@ -19,14 +22,30 @@ def converti_in_numero(valore):
 
 
 # pd.set_option('display.max_columns', None) # Mostra tutte le colonne
+def letturaJson(path) -> dict:
+    with open(path, 'r') as file:
+        # Carica il contenuto del file JSON in un dizionario
+        dizionario_da_json = json.load(file)
+        return dizionario_da_json
+
 
 def letturaDataset(path):
     df = pd.read_csv(path)
     return df
 
 
-def dataCleaning(dataset, target, prot_attr):
+def letturaGruppoPrivilegiato(protAttr: dict):
+    attributi = []
+    for label, valore in protAttr.items():
+        if valore == 'true':
+            attributi.append(label)
+    print(attributi)
+    return attributi
+
+
+def dataCleaning(dataset, parametriAddestramento, prot_attr):
     print(dataset)
+    target = parametriAddestramento['target']
 
     # ----------1° parte----------
     # Tramite questa print abbiamo una overview sul complessivo di attirbuti mancanti del dataset
@@ -228,10 +247,12 @@ def dataCleaning(dataset, target, prot_attr):
 
     plt.show()
 
-    # aif360
+    if (parametriAddestramento['tipoModello'] == 'DecisionTree'):
+        return train_decision_tree(X_resampled, X_test, y_resampled, y_test, parametriAddestramento, prot_attr)
+    elif (parametriAddestramento['tipoModello'] == 'NaiveBayes'):
+        return trainNaiveBayes(X_resampled, X_test, y_resampled, y_test, parametriAddestramento, prot_attr)
 
-    ##train_decision_tree(X_resampled, X_test, y_resampled, y_test, None, prot_attr)
-    trainNaiveBayes(X_resampled, X_test, y_resampled, y_test, None, prot_attr)
+    return None
 
     # Se vuoi stampare il dataset:
     # dfNormalizzato.to_csv('nome_file.csv', index=False)

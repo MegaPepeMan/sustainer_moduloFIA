@@ -1,5 +1,5 @@
 {
-  "tipoModello": "DecisionTree",
+  "tipoModello": "NaiveBayes",
   "naiveBayesDistribuzione": 10,
   "naiveBayesSmoothing": 5,
   "naiveBayesCriterioDiSuddivisione": "gaussian"

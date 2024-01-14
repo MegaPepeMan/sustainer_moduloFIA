@@ -1,4 +1,6 @@
 # Per addestrare un modello Decision Tree utilizzando un dataset e un file JSON in Python, puoi seguire un approccio simile al seguente utilizzando la libreria scikit-learn per il modello Decision Tree:
+import pickle
+
 from sklearn.tree import DecisionTreeClassifier
 from sklearn.metrics import accuracy_score
 from sklearn.metrics import recall_score
@@ -49,4 +51,4 @@ def train_decision_tree(X_train, X_test, y_train, y_test, json_config_path, prot
     # Disperate_Impact
     # disparate = disparate_impact_ratio(y_test)
     # print('Disparate impact ratio: ', disparate)
-    return rew
+    return rew, accuracy, recall, precision, emissions
