@@ -29,6 +29,11 @@ def handle_resource():
 
             # Puoi ora lavorare con i dati JSON come un dizionario Python
             parametriGet = request.values.to_dict()
+            print(parametriGet)
+            print(dati_json['pathDataset'])
+            print(dati_json['pathJson'])
+            df = letturaDataset(dati_json['pathDataset'])
+            print(df)
             modelloAddestrato, accuracy, recall, precision, emissions = gestisciAddestramento(dati_json['pathDataset'],dati_json['pathJson'],parametriGet)
 
             print(accuracy, recall, precision, emissions)
@@ -43,6 +48,23 @@ def handle_resource():
                         'recall': recall,
                         'precision': precision,
                         'emissions': emissions}
+            return jsonify(risposta), 200
+        else:
+            # Se la richiesta non contiene dati JSON, restituisci un errore
+            return jsonify({'errore': 'Richiesta non valida. Assicurati di inviare dati in formato JSON.'}), 400
+
+    except Exception as e:
+        # Gestione delle eccezioni in caso di errori
+        return jsonify({'errore': f'Errore durante l\'elaborazione della richiesta: {str(e)}'}), 500
+
+@app.route('/prova', methods=['GET', 'POST'])
+def prova():
+    try:
+        # Verifica se la richiesta contiene dati JSON
+        print(request.headers['Content-Type'])
+        if request.headers['Content-Type'] == 'application/json':
+
+            risposta = {'message':'Collegamento riuscito'}, 200
 
             return jsonify(risposta)
         else:
@@ -52,6 +74,8 @@ def handle_resource():
     except Exception as e:
         # Gestione delle eccezioni in caso di errori
         return jsonify({'errore': f'Errore durante l\'elaborazione della richiesta: {str(e)}'}), 500
+
+
 
 if __name__ == '__main__':
     app.run(debug=True, port=port_number)

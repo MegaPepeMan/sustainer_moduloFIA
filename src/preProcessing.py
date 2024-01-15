@@ -30,8 +30,12 @@ def letturaJson(path) -> dict:
 
 
 def letturaDataset(path):
-    df = pd.read_csv(path)
-    return df
+    try:
+        df = pd.read_csv(path)
+        return df
+    except Exception as e:
+        print(e)
+
 
 
 def letturaGruppoPrivilegiato(protAttr: dict):
