@@ -251,9 +251,9 @@ def dataCleaning(dataset, parametriAddestramento, prot_attr):
 
     plt.show()
 
-    if (parametriAddestramento['tipoModello'] == 'DecisionTree'):
+    if (parametriAddestramento['tipoModello'] == 'decisiontree'):
         return train_decision_tree(X_resampled, X_test, y_resampled, y_test, parametriAddestramento, prot_attr)
-    elif (parametriAddestramento['tipoModello'] == 'NaiveBayes'):
+    elif (parametriAddestramento['tipoModello'] == 'naivebayes'):
         return trainNaiveBayes(X_resampled, X_test, y_resampled, y_test, parametriAddestramento, prot_attr)
 
     return None
