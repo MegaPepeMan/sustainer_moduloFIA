@@ -1,4 +1,6 @@
 import warnings
+
+from aif360.sklearn.metrics import disparate_impact_ratio
 from sklearn.naive_bayes import GaussianNB, MultinomialNB
 from sklearn.metrics import accuracy_score
 from sklearn.metrics import recall_score
@@ -10,6 +12,8 @@ import logging
 
 
 def train_naive_bayes(X_train, X_test, y_train, y_test, json_config_path, prot_attr: list[str]):
+
+    logging.basicConfig(level=logging.WARNING)
 
     # Dato che nella libreria di scikit-learn la funzione 'if_has_delegate_method' verrà deprecato
     # dunque sopprimiamo l'errore
@@ -67,5 +71,10 @@ def train_naive_bayes(X_train, X_test, y_train, y_test, json_config_path, prot_a
     # Sustainability
     emissions = "{:.10f}".format(emissions)
     print('CodeCarbon - Sustainability (CO2): ', emissions, 'kg')
+
+    # Disperate_Impact
+    # Il valore del primo parametro deve contenere la label del gruppo privilegiato
+    disparate = disparate_impact_ratio(X_test, rew.predict(X_test), prot_attr=prot_attr)
+    print('Disparate impact ratio: ', disparate)
 
     return rew, accuracy, recall, precision, emissions

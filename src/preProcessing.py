@@ -93,21 +93,6 @@ def data_preparation(dataset, parametri_addestramento, attributi_protetti):
     df = df.reset_index(drop=True)
 
     # ----------3° parte----------
-    # Andiamo a gestire i valori che sono nulli e che vogliamo conservare
-
-    # Identifica le colonne di tipo numerico
-    attributi_numerici = df.select_dtypes(include=[np.number]).columns
-    logger.debug('Gli attributi numerici sono: ', attributi_numerici.tolist())
-
-    # Imputa i valori nulli solo per le colonne numeriche utilizzando la media
-    for att in attributi_numerici:
-        df[att].fillna(df[att].mean(), inplace=True)
-        # inplace=True per modificare il dataframe originale senza doverlo assegnare a una nuova variabile
-
-    logger.debug('Questa è la nuova distribuzione dei valori null: ', df.isnull().mean())
-    logger.debug(df)
-
-    # ----------4° parte----------
     # converti gli attributi che contengono solo numeri in attributi di tipo float o int
 
     # Salviamo tutte le colonne non numeriche
@@ -134,6 +119,21 @@ def data_preparation(dataset, parametri_addestramento, attributi_protetti):
             logger.debug('Conversione finita, nessun errore')
 
     logger.debug(df.dtypes)
+
+    # ----------4° parte----------
+    # Andiamo a gestire i valori che sono nulli e che vogliamo conservare
+
+    # Identifica le colonne di tipo numerico
+    attributi_numerici = df.select_dtypes(include=[np.number]).columns
+    logger.debug('Gli attributi numerici sono: ', attributi_numerici.tolist())
+
+    # Imputa i valori nulli solo per le colonne numeriche utilizzando la media
+    for att in attributi_numerici:
+        df[att].fillna(df[att].mean(), inplace=True)
+        # inplace=True per modificare il dataframe originale senza doverlo assegnare a una nuova variabile
+
+    logger.debug('Questa è la nuova distribuzione dei valori null: ', df.isnull().mean())
+    logger.debug(df)
 
     # ----------5° parte----------
     # Mostra i valori unici per ogni colonna

@@ -1,3 +1,4 @@
+from aif360.sklearn.metrics import disparate_impact_ratio
 from sklearn.tree import DecisionTreeClassifier
 from sklearn.metrics import accuracy_score
 from sklearn.metrics import recall_score
@@ -11,7 +12,8 @@ from codecarbon import OfflineEmissionsTracker
 
 def train_decision_tree(X_train, X_test, y_train, y_test, json_config_path, prot_attr: list[str]):
 
-    print(json_config_path)
+    logging.basicConfig(level=logging.WARNING)
+
     # Dato che nella libreria di scikit-learn la funzione 'if_has_delegate_method' verrà deprecato
     # dunque sopprimiamo l'errore
     warnings.filterwarnings("ignore", category=FutureWarning)
@@ -23,8 +25,7 @@ def train_decision_tree(X_train, X_test, y_train, y_test, json_config_path, prot
     tree_classifier = DecisionTreeClassifier(
         criterion=json_config_path['decisionTreeCriterioDiSuddivisione'],
         max_depth=int(json_config_path['decisionTreeProfondita']),
-        min_samples_leaf=int(json_config_path['decisionTreeCampioniFoglia']),
-        random_state=42      # seme per la casualità)
+        min_samples_leaf=int(json_config_path['decisionTreeCampioniFoglia'])
     )
 
     X_train = X_train.set_index(prot_attr)
@@ -58,6 +59,7 @@ def train_decision_tree(X_train, X_test, y_train, y_test, json_config_path, prot
     print('CodeCarbon - Sustainability (CO2): ', emissions, 'kg')
 
     # Disperate_Impact
-    # disparate = disparate_impact_ratio(y_test)
-    # print('Disparate impact ratio: ', disparate)
+    # Il valore del primo parametro deve contenere la label del gruppo privilegiato
+    disparate = disparate_impact_ratio(X_test, rew.predict(X_test), prot_attr=prot_attr)
+    print('Disparate impact ratio: ', disparate)
     return rew, accuracy, recall, precision, emissions

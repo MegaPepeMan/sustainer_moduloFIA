@@ -1,7 +1,8 @@
 #necessario python 3.11.3
+#pip install -r requirements.txt
 scikit-learn==1.2.2
 matplotlib==3.8.2
-aif360==0.5.0
+aif360[LFR, FairAdapt]==0.5.0
 imblearn==0.0.0
 codecarbon==2.3.2
 Flask==3.0.0
