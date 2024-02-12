@@ -1,6 +1,9 @@
-from src.Server import gestisci_addestramento
-from src.preProcessing import *
-import os
+
+import os,sys
+cwd = os.getcwd()
+
+sys.path.append(os.path.join(cwd, os.pardir))
+from src.Server import *
 
 cartella_attuale = os.getcwd()  # cartella tests
 cartella_dataset = os.path.abspath(os.path.join(cartella_attuale, 'Dataset'))  # cartella tests/Dataset

@@ -51,6 +51,9 @@ def lettura_gruppo_privilegiato(protAttr: dict):
 def data_preparation(dataset, parametri_addestramento, attributi_protetti):
 
     # Configura il logger per visualizzare i messaggi di debug
+    logger.remove()
+    logger.add(sink="addestramento.log", level="DEBUG")
+
     logger.debug('Dataset: ', dataset)
 
 
