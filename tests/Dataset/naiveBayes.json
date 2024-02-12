@@ -1,0 +1,7 @@
+{
+  "tipoModello": "naivebayes",
+  "naiveBayesDistribuzione": [0.7,0.3],
+  "naiveBayesSmoothing": 1.0,
+  "naiveBayesCriterioDiSuddivisione": "gaussian",
+  "target":"Survived"
+}

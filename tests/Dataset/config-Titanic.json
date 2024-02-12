@@ -1,0 +1,7 @@
+{
+  "tipoModello":"decisiontree",
+  "decisionTreeCriterioDiSuddivisione":"gini",
+  "decisionTreeProfondita":"300",
+  "decisionTreeCampioniFoglia":"300",
+  "target":"Survived"
+}
