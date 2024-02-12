@@ -17,21 +17,22 @@
 -   R 4.3.2
 
 **Nota bene**: Durante l'installazione del package `rpy2` 
-saranno richieste le seguenti librerie: `libpcre2-dev`, `libbz2-dev` e `zlib1g-dev`.
-Verifca dunque la loro presenza.
+ti saranno richieste le seguenti librerie: `libpcre2-dev`, `libbz2-dev` e `zlib1g-dev`.
+Verifca dunque la loro presenza nel seguente modo.
 
 
 ### Windows:
-1. Settare la variabile d'ambiente `R_HOME`
-2. Aggiungere `R_HOME\bin` a `PATH` in modo da eseguire `R` da `Python`
-3. Aggiungere `R_HOME\bin\x64` a `PATH` in modo da caricare `R.dll`
+1. Imposta la variabile d'ambiente `R_HOME`
+2. Aggiungi `R_HOME\bin` a `PATH` in modo da eseguire `R` da `Python`
+3. Aggiungi `R_HOME\bin\x64` a `PATH` in modo da caricare `R.dll`
+4. Riavvia il PC
 
 ### MacOS:
-1. Installare Homebrew da terminale:
+1. Installa Homebrew da terminale:
 ```bash
  /bin/bash -c "$(curl -fsSL https://raw.githubusercontent.com/Homebrew/install/HEAD/install.sh)"
 ```
-2. Installare le librerie richieste
+2. Installa le librerie richieste
 ```bash
  brew install pcre2 bzip2 zlib
 ```
@@ -50,14 +51,12 @@ Verifca dunque la loro presenza.
 2. Installa le dipendenze per il backend
 
 ```bash
- cd sustainer_moduloFIA
  pip3 install -r requirements.txt
 ```
 
 3. Esegui il modulo per il test
 
 ```bash
- cd sustainer_moduloFIA
  cd tests
  python3 test-1.py
 ```
